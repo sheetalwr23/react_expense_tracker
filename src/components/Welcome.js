@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { sendEmailVerification, reload } from "firebase/auth";
 import { auth } from "./firebaseConfig";
+import Expenses from "./Expenses";
 
 const Welcome = () => {
   const [verificationSent, setVerificationSent] = useState(false);
@@ -47,6 +48,7 @@ const Welcome = () => {
           {error && <p className="error">{error}</p>}
         </div>
       )}
+      {isEmailVerified && <Expenses />}
     </div>
   );
 };
