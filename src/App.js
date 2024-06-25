@@ -15,6 +15,10 @@ const App = () => {
           <Route path="/login" component={Login} />
           <Route path="/welcome" component={Welcome} />
           <Route path="/profile" component={Profile} />
+          <button className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
+          <Counter name="Your Name" handleEvent={handleEvent} />
         </Switch>
       </div>
     </Router>
