@@ -1,28 +1,24 @@
 // App.js
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Signup from "./Signup";
 import Login from "./Login";
 import Welcome from "./Welcome";
 import Profile from "./Profile";
+import ForgotPassword from "./ForgotPassword";
 
-const App = () => {
+function App() {
   return (
     <Router>
-      <div className="App">
-        <Switch>
-          <Route path="/" exact component={Signup} />
-          <Route path="/login" component={Login} />
-          <Route path="/welcome" component={Welcome} />
-          <Route path="/profile" component={Profile} />
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
-          </button>
-          <Counter name="Your Name" handleEvent={handleEvent} />
-        </Switch>
-      </div>
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;

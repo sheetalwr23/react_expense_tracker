@@ -1,5 +1,6 @@
 // Login.js
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 
@@ -7,21 +8,21 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
-      const token = await userCredential.user.getIdToken();
-      localStorage.setItem("token", token);
-      console.log("User has successfully logged in");
-      window.location.href = "/welcome"; // Redirect to welcome page
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+      localStorage.setItem("userToken", token);
+      navigate("/welcome");
     } catch (error) {
       setError(error.message);
     }
@@ -31,16 +32,16 @@ const Login = () => {
     <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
+        <label>Email:</label>
         <input
           type="email"
-          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+        <label>Password:</label>
         <input
           type="password"
-          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
@@ -48,6 +49,9 @@ const Login = () => {
         <button type="submit">Login</button>
         {error && <p className="error">{error}</p>}
       </form>
+      <button onClick={() => navigate("/forgot-password")}>
+        Forgot Password
+      </button>
     </div>
   );
 };
