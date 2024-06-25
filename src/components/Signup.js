@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebaseConfig";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -26,20 +27,16 @@ const Signup = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       console.log("User has successfully signed up");
+      window.location.href = "/login"; // Redirect to login page after successful signup
     } catch (error) {
       setError(error.message);
     }
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <div className="signup-container">
       <h2>Signup</h2>
-      <form
-        onSubmit={handleSignup}
-        style={{ display: "flex", flexDirection: "column", width: "300px" }}
-      >
+      <form onSubmit={handleSignup}>
         <input
           type="email"
           placeholder="Email"
@@ -67,8 +64,11 @@ const Signup = () => {
         >
           Signup
         </button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="error">{error}</p>}
       </form>
+      <p>
+        Already have an account? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 };
