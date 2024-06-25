@@ -1,13 +1,30 @@
 // Profile.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { updateProfile } from "firebase/auth";
-import { auth } from "./firebaseConfig";
+import { auth, db } from "./firebaseConfig";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 const Profile = () => {
   const [profilePhoto, setProfilePhoto] = useState("");
   const [photoURL, setPhotoURL] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setProfilePhoto(data.photoURL || "");
+        }
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -18,6 +35,8 @@ const Profile = () => {
       const user = auth.currentUser;
       if (user) {
         await updateProfile(user, { photoURL: profilePhoto });
+        const docRef = doc(db, "users", user.uid);
+        await setDoc(docRef, { photoURL: profilePhoto }, { merge: true });
         setSuccess("Profile updated successfully");
       } else {
         setError("No user is currently signed in");

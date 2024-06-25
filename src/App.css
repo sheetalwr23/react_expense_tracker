@@ -1,10 +1,18 @@
 /* App.css */
-.App {
+.success {
+  color: green;
+  margin-top: 10px;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.profile-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
-  background-color: #f0f2f5;
 }
 
 form {
@@ -36,33 +44,6 @@ button:disabled {
   background-color: #aaa;
 }
 
-.error {
-  color: red;
-  margin-top: 10px;
-}
-
-.welcome-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f2f5;
-  flex-direction: column;
-}
-
-.profile-incomplete {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.profile-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .profile-buttons {
   display: flex;
   justify-content: space-between;
@@ -71,8 +52,4 @@ button:disabled {
 
 .profile-buttons button {
   width: 48%;
-}
-.success {
-  color: green;
-  margin-top: 10px;
 }
