@@ -1,5 +1,7 @@
 // Expenses.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { ref, set, push, onValue } from "firebase/database";
+import { db } from "./firebaseConfig";
 
 const Expenses = () => {
   const [amount, setAmount] = useState("");
@@ -7,13 +9,35 @@ const Expenses = () => {
   const [category, setCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
 
+  useEffect(() => {
+    const expensesRef = ref(db, "expenses");
+    onValue(expensesRef, (snapshot) => {
+      const expensesData = snapshot.val();
+      if (expensesData) {
+        const expensesList = Object.keys(expensesData).map((key) => ({
+          id: key,
+          amount: expensesData[key].amount,
+          description: expensesData[key].description,
+          category: expensesData[key].category,
+        }));
+        setExpenses(expensesList);
+      } else {
+        setExpenses([]);
+      }
+    });
+  }, []);
+
   const handleAddExpense = (e) => {
     e.preventDefault();
     const newExpense = { amount, description, category };
-    setExpenses([...expenses, newExpense]);
-    setAmount("");
-    setDescription("");
-    setCategory("");
+    const expensesRef = ref(db, "expenses");
+    push(expensesRef, newExpense)
+      .then(() => {
+        setAmount("");
+        setDescription("");
+        setCategory("");
+      })
+      .catch((error) => console.error("Error adding expense: ", error));
   };
 
   return (
@@ -52,8 +76,8 @@ const Expenses = () => {
       </form>
       <h3>Expenses</h3>
       <ul>
-        {expenses.map((expense, index) => (
-          <li key={index}>
+        {expenses.map((expense) => (
+          <li key={expense.id}>
             {expense.amount} - {expense.description} ({expense.category})
           </li>
         ))}
