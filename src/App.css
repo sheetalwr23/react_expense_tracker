@@ -47,11 +47,32 @@ button:disabled {
   align-items: center;
   height: 100vh;
   background-color: #f0f2f5;
-  font-size: 24px;
+  flex-direction: column;
 }
 
-.login-container {
+.profile-incomplete {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 20px;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.profile-buttons button {
+  width: 48%;
+}
+.success {
+  color: green;
+  margin-top: 10px;
 }
