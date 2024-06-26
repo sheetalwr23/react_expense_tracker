@@ -1,13 +1,54 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { showNotification } from "./uiSlice";
 
-const initialState = {
-  items: [],
-  isVisible: false,
-};
+export const fetchCartItems = createAsyncThunk(
+  "cart/fetchCartItems",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(
+        showNotification({
+          status: "pending",
+          title: "Loading...",
+          message: "Fetching cart items!",
+        })
+      );
+
+      const response = await fetch("/api/cart"); // Replace with your API endpoint
+      if (!response.ok) {
+        throw new Error("Failed to fetch cart items.");
+      }
+      const data = await response.json();
+
+      dispatch(
+        showNotification({
+          status: "success",
+          title: "Success!",
+          message: "Fetched cart items successfully!",
+        })
+      );
+
+      return data;
+    } catch (error) {
+      dispatch(
+        showNotification({
+          status: "error",
+          title: "Error!",
+          message: error.message || "Something went wrong!",
+        })
+      );
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState,
+  initialState: {
+    items: [],
+    isVisible: false,
+    status: "idle",
+    error: null,
+  },
   reducers: {
     toggleCart: (state) => {
       state.isVisible = !state.isVisible;
@@ -38,6 +79,20 @@ const cartSlice = createSlice({
     clearItemFromCart: (state, action) => {
       state.items = state.items.filter((item) => item.id !== action.payload.id);
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCartItems.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchCartItems.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.items = action.payload;
+      })
+      .addCase(fetchCartItems.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
   },
 });
 
