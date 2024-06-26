@@ -1,49 +1,40 @@
 // App.js
+
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import Signup from "./Signup";
-import Login from "./Login";
-import Welcome from "./Welcome";
-import Profile from "./Profile";
-import ForgotPassword from "./ForgotPassword";
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout } from "./authSlice";
 
-const PrivateRoute = ({ children }) => {
-  const userToken = localStorage.getItem("userToken");
-  return userToken ? children : <Navigate to="/login" />;
-};
+const LoggedOutScreen = () => (
+  <div>
+    <h1>Welcome! Please log in.</h1>
+    <button onClick={handleLogin}>Log In</button>
+  </div>
+);
 
-function App() {
+const LoggedInScreen = () => (
+  <div>
+    <h1>Welcome! You are logged in.</h1>
+    <button onClick={handleLogout}>Log Out</button>
+  </div>
+);
+
+const App = () => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
+
+  const handleLogin = () => {
+    dispatch(login());
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route
-          path="/welcome"
-          element={
-            <PrivateRoute>
-              <Welcome />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </Router>
+    <div className="App">
+      {isAuthenticated ? <LoggedInScreen /> : <LoggedOutScreen />}
+    </div>
   );
-}
+};
 
 export default App;
